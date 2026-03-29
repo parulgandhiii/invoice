@@ -7,18 +7,12 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #ffffff;
-    --bg2: #f5f5f3;
-    --bg3: #eeede9;
-    --text: #1a1a1a;
-    --text2: #666660;
-    --text3: #999993;
-    --border: rgba(0,0,0,0.12);
-    --border2: rgba(0,0,0,0.22);
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #eeede9;
+    --text: #1a1a1a; --text2: #666660; --text3: #999993;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
     --success-bg: #eaf3de; --success-text: #3b6d11;
     --warning-bg: #faeeda; --warning-text: #854f0b;
     --danger-bg: #fcebeb; --danger-text: #a32d2d;
-    --info-bg: #e6f1fb; --info-text: #185fa5;
     --radius: 10px; --radius-lg: 14px;
     --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
@@ -30,7 +24,6 @@
       --success-bg: #173404; --success-text: #c0dd97;
       --warning-bg: #412402; --warning-text: #fac775;
       --danger-bg: #501313; --danger-text: #f09595;
-      --info-bg: #042c53; --info-text: #b5d4f4;
     }
   }
   body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; }
@@ -50,7 +43,7 @@
   .card-label { font-size: 11px; font-weight: 600; letter-spacing: 0.6px; color: var(--text3); text-transform: uppercase; margin-bottom: 12px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  @media (max-width: 480px) { .grid2, .grid3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .grid3 { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 360px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
   .field { margin-bottom: 12px; }
   .field:last-child { margin-bottom: 0; }
@@ -64,14 +57,17 @@
   input:focus, select:focus, textarea:focus { border-color: var(--border2); background: var(--bg); }
   input[type=number] { -moz-appearance: textfield; }
   input[type=number]::-webkit-inner-spin-button { display: none; }
+  input[type=date] { cursor: pointer; }
   textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
   .items-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 420px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 400px; }
   th { text-align: left; padding: 6px 8px; font-weight: 600; font-size: 11px; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text3); border-bottom: 0.5px solid var(--border); }
-  td { padding: 6px 4px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
-  td:last-child { border-bottom-color: transparent; }
-  .td-input { background: transparent; border: none; border-radius: 6px; padding: 6px 8px; font-size: 14px; }
+  td { padding: 5px 4px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+  .td-input { background: transparent; border: none; border-radius: 6px; padding: 6px 8px; font-size: 14px; color: var(--text); font-family: var(--font); width: 100%; }
   .td-input:focus { background: var(--bg2); outline: none; }
+  .td-input[type=number] { -moz-appearance: textfield; }
+  .td-input[type=number]::-webkit-inner-spin-button { display: none; }
+  .amt-cell { font-size: 14px; font-weight: 500; padding-left: 8px; white-space: nowrap; }
   .btn { padding: 9px 18px; border-radius: 8px; border: 0.5px solid var(--border2); background: transparent; cursor: pointer; font-size: 14px; font-family: var(--font); color: var(--text); transition: all 0.15s; font-weight: 500; }
   .btn:hover { background: var(--bg2); }
   .btn:active { transform: scale(0.97); }
@@ -102,13 +98,16 @@
   .pay-row input { flex: 1; min-width: 120px; max-width: 180px; }
   .inv-detail { display: none; border-top: 0.5px solid var(--border); margin-top: 14px; padding-top: 12px; }
   .inv-detail.open { display: block; }
-  .inv-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 0.5px solid var(--border); gap: 8px; }
-  .inv-row:last-child { border-bottom: none; }
-  .inv-id { font-weight: 600; font-size: 13px; }
-  .inv-date { font-size: 12px; color: var(--text2); }
+  .inv-row { padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .inv-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .inv-row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+  .inv-row-bottom { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .inv-num { font-weight: 700; font-size: 13px; }
+  .inv-date-txt { font-size: 12px; color: var(--text2); }
+  .inv-amount { font-weight: 600; font-size: 15px; white-space: nowrap; }
   .tag { display: inline-block; background: var(--bg2); border: 0.5px solid var(--border); border-radius: 5px; padding: 2px 7px; font-size: 11px; color: var(--text2); margin: 2px 2px 0 0; }
   .expand-btn { font-size: 12px; color: var(--text3); cursor: pointer; white-space: nowrap; user-select: none; padding: 4px; }
-  .suggestions { position: absolute; z-index: 30; background: var(--bg); border: 0.5px solid var(--border2); border-radius: 10px; width: 100%; top: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); overflow: hidden; }
+  .suggestions { position: absolute; z-index: 30; background: var(--bg); border: 0.5px solid var(--border2); border-radius: 10px; width: 100%; top: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); overflow: hidden; }
   .sug-item { padding: 10px 14px; font-size: 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
   .sug-item:hover { background: var(--bg2); }
   .sug-due { font-size: 11px; color: var(--danger-text); }
@@ -116,10 +115,19 @@
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--text); color: var(--bg); padding: 11px 20px; border-radius: 24px; font-size: 13px; font-weight: 500; opacity: 0; transition: all 0.25s; z-index: 100; white-space: nowrap; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .flex-between { display: flex; justify-content: space-between; align-items: center; }
-  .search-wrap { position: relative; margin-bottom: 1rem; }
+  .search-wrap { margin-bottom: 1rem; }
   .action-bar { display: flex; gap: 8px; justify-content: flex-end; margin-top: 0.5rem; }
-  .divider { height: 0.5px; background: var(--border); margin: 12px 0; }
   .pos-rel { position: relative; }
+  /* Toggle switch */
+  .toggle-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .toggle-switch { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle-track { position: absolute; inset: 0; background: var(--border2); border-radius: 22px; transition: background 0.2s; }
+  .toggle-switch input:checked + .toggle-track { background: #3b6d11; }
+  .toggle-track::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
+  .toggle-switch input:checked + .toggle-track::before { transform: translateX(18px); }
+  .toggle-lbl { font-size: 12px; color: var(--text2); user-select: none; }
+  .inv-status-badge { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; margin-left: auto; }
 </style>
 </head>
 <body>
@@ -146,7 +154,7 @@
         <div class="field pos-rel">
           <label>Customer Name *</label>
           <input type="text" id="cust-name" placeholder="Full name" oninput="suggestCustomer()" autocomplete="off"/>
-          <div id="name-sug" style="position:absolute;width:100%;top:100%"></div>
+          <div id="name-sug" style="position:absolute;width:100%;top:100%;z-index:30"></div>
         </div>
         <div class="field">
           <label>Phone Number</label>
@@ -154,8 +162,8 @@
         </div>
       </div>
       <div class="field">
-        <label>Vehicle Details</label>
-        <input type="text" id="vehicle" placeholder="e.g. Maruti Swift DL01AB1234, 2019"/>
+        <label>Invoice Date</label>
+        <input type="date" id="inv-date"/>
       </div>
     </div>
 
@@ -165,10 +173,10 @@
         <table>
           <thead>
             <tr>
-              <th style="width:42%">Description</th>
-              <th style="width:14%">Qty</th>
-              <th style="width:24%">Rate (₹)</th>
-              <th style="width:16%">Amount</th>
+              <th style="width:44%">Description</th>
+              <th style="width:13%">Qty</th>
+              <th style="width:22%">Rate (₹)</th>
+              <th style="width:17%">Amount</th>
               <th style="width:4%"></th>
             </tr>
           </thead>
@@ -202,7 +210,7 @@
       </div>
       <div class="field" style="margin-top:12px">
         <label>Notes</label>
-        <textarea id="notes" placeholder="Any additional notes for this invoice..."></textarea>
+        <textarea id="notes" placeholder="Any additional notes..."></textarea>
       </div>
     </div>
 
@@ -234,16 +242,28 @@ let accounts = {};
 let expanded = {};
 
 function loadData() {
-  try { const s = localStorage.getItem('auto_biz_v2'); if (s) accounts = JSON.parse(s); } catch(e) {}
+  try { const s = localStorage.getItem('auto_biz_v3'); if (s) accounts = JSON.parse(s); } catch(e) {}
 }
 function saveData() {
-  try { localStorage.setItem('auto_biz_v2', JSON.stringify(accounts)); } catch(e) {}
+  try { localStorage.setItem('auto_biz_v3', JSON.stringify(accounts)); } catch(e) {}
 }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2600);
+}
+function todayStr() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+dd;
+}
+function formatDate(str) {
+  if (!str) return '';
+  const [y,m,d] = str.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d + ' ' + months[+m-1] + ' ' + y;
 }
 
 function switchView(v, btn) {
@@ -254,127 +274,159 @@ function switchView(v, btn) {
   if (v === 'accounts') renderAccounts();
 }
 
-function addItem(desc='', qty=1, rate=0) {
-  items.push({ id: Date.now()+Math.random(), desc, qty, rate });
+// ─── Items ───────────────────────────────────────────────
+function addItem() {
+  items.push({ id: Date.now() + Math.random(), desc: '', qty: 1, rate: 0 });
   renderItems();
 }
-
 function removeItem(id) {
   items = items.filter(i => i.id !== id);
   renderItems();
 }
-
 function renderItems() {
   const tbody = document.getElementById('items-body');
-  tbody.innerHTML = items.map((item, idx) => `
-    <tr>
-      <td><input class="td-input" style="width:100%" type="text" value="${h(item.desc)}" placeholder="Part / service" onchange="items[${idx}].desc=this.value"/></td>
-      <td><input class="td-input" style="width:56px" type="number" value="${item.qty}" min="1" onchange="items[${idx}].qty=+this.value;calcTotals()"/></td>
-      <td><input class="td-input" style="width:100%" type="number" value="${item.rate}" min="0" onchange="items[${idx}].rate=+this.value;calcTotals()"/></td>
-      <td style="font-size:14px;font-weight:500;white-space:nowrap">₹${fmt(item.qty*item.rate)}</td>
+  tbody.innerHTML = items.map(item => {
+    const amt = (item.qty || 0) * (item.rate || 0);
+    return `<tr>
+      <td><input class="td-input" type="text" value="${h(item.desc)}" placeholder="Part / service"
+        onchange="setItemField(${item.id},'desc',this.value)"/></td>
+      <td><input class="td-input" type="number" value="${item.qty}" min="0" style="width:56px"
+        oninput="setItemField(${item.id},'qty',this.value)"/></td>
+      <td><input class="td-input" type="number" value="${item.rate}" min="0"
+        oninput="setItemField(${item.id},'rate',this.value)"/></td>
+      <td class="amt-cell">₹${fmt(amt)}</td>
       <td><button class="btn xs danger" onclick="removeItem(${item.id})">✕</button></td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
+  calcTotals();
+}
+function setItemField(id, field, value) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+  item[field] = (field === 'qty' || field === 'rate') ? (parseFloat(value) || 0) : value;
+  // Update only the amount cell for that row without full re-render to avoid losing focus
+  const rows = document.getElementById('items-body').querySelectorAll('tr');
+  const idx = items.findIndex(i => i.id === id);
+  if (rows[idx]) {
+    const amtCell = rows[idx].querySelector('.amt-cell');
+    if (amtCell) amtCell.textContent = '₹' + fmt(item.qty * item.rate);
+  }
   calcTotals();
 }
 
 function calcTotals() {
-  const sub = items.reduce((s,i) => s + i.qty*i.rate, 0);
-  const disc = Math.max(0, +document.getElementById('discount').value||0);
-  const gstPct = Math.max(0, +document.getElementById('gst').value||0);
+  const sub = items.reduce((s, i) => s + (i.qty || 0) * (i.rate || 0), 0);
+  const disc = Math.max(0, parseFloat(document.getElementById('discount').value) || 0);
+  const gstPct = Math.max(0, parseFloat(document.getElementById('gst').value) || 0);
   const afterDisc = Math.max(0, sub - disc);
   const gstAmt = afterDisc * gstPct / 100;
   const grand = afterDisc + gstAmt;
-  document.getElementById('t-sub').textContent = '₹'+fmt(sub);
-  document.getElementById('t-disc').textContent = '-₹'+fmt(disc);
-  document.getElementById('t-gst').textContent = '₹'+fmt(gstAmt)+' ('+gstPct+'%)';
-  document.getElementById('t-grand').textContent = '₹'+fmt(grand);
+  document.getElementById('t-sub').textContent = '₹' + fmt(sub);
+  document.getElementById('t-disc').textContent = '-₹' + fmt(disc);
+  document.getElementById('t-gst').textContent = '₹' + fmt(gstAmt) + ' (' + gstPct + '%)';
+  document.getElementById('t-grand').textContent = '₹' + fmt(grand);
   return { sub, disc, gstPct, gstAmt, grand };
 }
 
+// ─── Save Invoice ─────────────────────────────────────────
 function saveInvoice() {
   const name = document.getElementById('cust-name').value.trim();
   const phone = document.getElementById('cust-phone').value.trim();
-  const vehicle = document.getElementById('vehicle').value.trim();
   const notes = document.getElementById('notes').value.trim();
-  const initPay = Math.max(0, +document.getElementById('init-pay').value||0);
+  const dateVal = document.getElementById('inv-date').value || todayStr();
+  const initPay = Math.max(0, parseFloat(document.getElementById('init-pay').value) || 0);
 
   if (!name) { showToast('Please enter customer name'); return; }
   if (!items.length) { showToast('Please add at least one item'); return; }
 
   const t = calcTotals();
-  const invId = 'INV-' + Date.now().toString().slice(-7);
-  const date = new Date().toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
-
-  const invoice = {
-    id: invId, date, vehicle, notes,
-    items: JSON.parse(JSON.stringify(items)),
-    sub: t.sub, disc: t.disc, gstPct: t.gstPct, gstAmt: t.gstAmt, grand: t.grand
-  };
-
   const key = name.toLowerCase().trim();
+
   if (!accounts[key]) accounts[key] = { name, phone, invoices: [], totalBilled: 0, totalPaid: 0 };
   if (phone && !accounts[key].phone) accounts[key].phone = phone;
 
-  accounts[key].invoices.push(invoice);
-  accounts[key].totalBilled += t.grand;
-  accounts[key].totalPaid += Math.min(initPay, t.grand);
+  const invNum = accounts[key].invoices.length + 1;
+  const invId = 'INV-' + String(invNum).padStart(3, '0');
+  const paid = Math.min(initPay, t.grand);
 
+  accounts[key].invoices.push({
+    id: invId, num: invNum, date: dateVal, notes,
+    items: JSON.parse(JSON.stringify(items)),
+    sub: t.sub, disc: t.disc, gstPct: t.gstPct, gstAmt: t.gstAmt, grand: t.grand,
+    paid: paid >= t.grand, paidAmount: paid
+  });
+
+  recomputeTotals(key);
   saveData();
-  showToast('Invoice ' + invId + ' saved for ' + name);
+  showToast(invId + ' saved for ' + name);
   clearInvoice();
 }
 
 function clearInvoice() {
-  ['cust-name','cust-phone','vehicle','notes'].forEach(id => document.getElementById(id).value='');
-  document.getElementById('discount').value='0';
-  document.getElementById('gst').value='18';
-  document.getElementById('init-pay').value='0';
-  document.getElementById('name-sug').innerHTML='';
-  items=[];
+  ['cust-name','cust-phone','notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('inv-date').value = todayStr();
+  document.getElementById('discount').value = '0';
+  document.getElementById('gst').value = '18';
+  document.getElementById('init-pay').value = '0';
+  document.getElementById('name-sug').innerHTML = '';
+  items = [];
   renderItems();
 }
 
+// ─── Autocomplete ─────────────────────────────────────────
 function suggestCustomer() {
   const val = document.getElementById('cust-name').value.toLowerCase();
   const div = document.getElementById('name-sug');
-  if (val.length < 2) { div.innerHTML=''; return; }
-  const matches = Object.values(accounts).filter(a => a.name.toLowerCase().includes(val)).slice(0,5);
-  if (!matches.length) { div.innerHTML=''; return; }
-  div.innerHTML = `<div class="suggestions">${matches.map(m=>`
+  if (val.length < 2) { div.innerHTML = ''; return; }
+  const matches = Object.values(accounts).filter(a => a.name.toLowerCase().includes(val)).slice(0, 5);
+  if (!matches.length) { div.innerHTML = ''; return; }
+  div.innerHTML = `<div class="suggestions">${matches.map(m => `
     <div class="sug-item" onclick="fillCustomer('${h(m.name)}','${h(m.phone||'')}')">
       <span>${h(m.name)} <span style="color:var(--text2);font-size:12px">${m.phone||''}</span></span>
-      <span class="sug-due">Due ₹${fmt(Math.max(0,m.totalBilled-m.totalPaid))}</span>
+      <span class="sug-due">Due ₹${fmt(Math.max(0, m.totalBilled - m.totalPaid))}</span>
     </div>`).join('')}</div>`;
 }
-
 function fillCustomer(name, phone) {
   document.getElementById('cust-name').value = name;
   document.getElementById('cust-phone').value = phone;
   document.getElementById('name-sug').innerHTML = '';
 }
-
 document.addEventListener('click', e => {
   if (!e.target.closest('#cust-name') && !e.target.closest('#name-sug'))
-    document.getElementById('name-sug').innerHTML='';
+    document.getElementById('name-sug').innerHTML = '';
 });
 
+// ─── Accounts ────────────────────────────────────────────
+function recomputeTotals(key) {
+  accounts[key].totalBilled = accounts[key].invoices.reduce((s, inv) => s + inv.grand, 0);
+  accounts[key].totalPaid = accounts[key].invoices.reduce((s, inv) => s + (inv.paidAmount || 0), 0);
+}
+
+function toggleInvoicePaid(key, idx) {
+  const inv = accounts[key].invoices[idx];
+  inv.paid = !inv.paid;
+  inv.paidAmount = inv.paid ? inv.grand : 0;
+  recomputeTotals(key);
+  saveData();
+  renderAccounts();
+}
+
 function renderAccounts() {
-  const search = (document.getElementById('search')?.value||'').toLowerCase();
+  const search = (document.getElementById('search')?.value || '').toLowerCase();
   const list = document.getElementById('accounts-list');
   const keys = Object.keys(accounts).filter(k => {
     const a = accounts[k];
-    return !search || a.name.toLowerCase().includes(search) || (a.phone&&a.phone.includes(search));
+    return !search || a.name.toLowerCase().includes(search) || (a.phone && a.phone.includes(search));
   });
 
-  document.getElementById('acct-count').textContent = keys.length + ' customer' + (keys.length!==1?'s':'');
+  document.getElementById('acct-count').textContent = keys.length + ' customer' + (keys.length !== 1 ? 's' : '');
 
   if (!keys.length) {
     list.innerHTML = `<div class="empty">No accounts yet.<br>Save an invoice to create an account.</div>`;
     return;
   }
 
-  list.innerHTML = keys.sort((a,b) => {
+  list.innerHTML = keys.sort((a, b) => {
     const da = accounts[a].totalBilled - accounts[a].totalPaid;
     const db = accounts[b].totalBilled - accounts[b].totalPaid;
     return db - da;
@@ -384,45 +436,60 @@ function renderAccounts() {
     const st = due <= 0 ? 'success' : a.totalPaid > 0 ? 'warning' : 'danger';
     const stLbl = due <= 0 ? 'Paid' : a.totalPaid > 0 ? 'Partial' : 'Unpaid';
     const isOpen = expanded[k];
-    return `
-    <div class="acct-card">
+
+    const invoiceRows = a.invoices.map((inv, i) => `
+      <div class="inv-row">
+        <div class="inv-row-top">
+          <div>
+            <span class="inv-num">${inv.id}</span>
+            <span class="inv-date-txt"> — ${formatDate(inv.date)}</span>
+            <br/>
+            <span style="font-size:13px;font-weight:500;color:var(--text)">₹${fmt(inv.grand)}</span>
+          </div>
+          <span class="inv-status-badge ${inv.paid ? 'badge-success' : 'badge-danger'}">
+            ${inv.paid ? 'Paid' : 'Unpaid'}
+          </span>
+        </div>
+        ${inv.items.length ? `<div style="margin-bottom:8px">
+          ${inv.items.slice(0,3).map(it => `<span class="tag">${h(it.desc)}</span>`).join('')}
+          ${inv.items.length > 3 ? `<span class="tag">+${inv.items.length-3} more</span>` : ''}
+        </div>` : ''}
+        <div class="inv-row-bottom">
+          <label class="toggle-wrap" onclick="toggleInvoicePaid('${k}',${i})">
+            <div class="toggle-switch">
+              <input type="checkbox" ${inv.paid ? 'checked' : ''} onclick="event.stopPropagation();toggleInvoicePaid('${k}',${i})"/>
+              <div class="toggle-track"></div>
+            </div>
+            <span class="toggle-lbl">${inv.paid ? 'Mark as unpaid' : 'Mark as paid'}</span>
+          </label>
+          <button class="btn xs danger" style="margin-left:auto" onclick="deleteInvoice('${k}',${i})">Remove</button>
+        </div>
+        ${inv.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:6px">${h(inv.notes)}</div>` : ''}
+      </div>`).join('');
+
+    return `<div class="acct-card">
       <div class="acct-header">
         <div>
           <div class="acct-name">${h(a.name)}</div>
-          <div class="acct-phone">${a.phone||'No phone'} &nbsp;<span class="badge badge-${st}">${stLbl}</span></div>
+          <div class="acct-phone">${a.phone || 'No phone'} &nbsp;<span class="badge badge-${st}">${stLbl}</span></div>
         </div>
-        <span class="expand-btn" onclick="toggleCard('${k}')">${isOpen?'▲ Less':'▼ Details'}</span>
+        <span class="expand-btn" onclick="toggleCard('${k}')">${isOpen ? '▲ Less' : '▼ Details'}</span>
       </div>
       <div class="stats-grid">
         <div class="stat"><div class="stat-lbl">Total Billed</div><div class="stat-val">₹${fmt(a.totalBilled)}</div></div>
         <div class="stat"><div class="stat-lbl">Paid</div><div class="stat-val success">₹${fmt(a.totalPaid)}</div></div>
-        <div class="stat"><div class="stat-lbl">Balance Due</div><div class="stat-val ${due>0?'danger':'success'}">₹${fmt(due)}</div></div>
+        <div class="stat"><div class="stat-lbl">Balance Due</div><div class="stat-val ${due > 0 ? 'danger' : 'success'}">₹${fmt(due)}</div></div>
       </div>
       <div class="pay-row">
         <input type="number" id="pay-${k}" placeholder="Enter amount paid ₹" min="0"/>
         <button class="btn sm primary" onclick="addPayment('${k}')">Record Payment</button>
         <button class="btn sm danger" onclick="deleteAccount('${k}')">Delete</button>
       </div>
-      <div class="inv-detail ${isOpen?'open':''}" id="detail-${k}">
+      <div class="inv-detail ${isOpen ? 'open' : ''}" id="detail-${k}">
         <p style="font-size:11px;font-weight:600;letter-spacing:0.5px;color:var(--text3);text-transform:uppercase;margin-bottom:10px">
           Invoices (${a.invoices.length})
         </p>
-        ${a.invoices.map((inv,i) => `
-          <div class="inv-row">
-            <div style="flex:1;min-width:0">
-              <div class="inv-id">${inv.id} <span class="inv-date">— ${inv.date}</span></div>
-              ${inv.vehicle?`<div style="margin-top:4px"><span class="tag">${h(inv.vehicle)}</span></div>`:''}
-              <div style="margin-top:4px">
-                ${inv.items.slice(0,3).map(it=>`<span class="tag">${h(it.desc)}</span>`).join('')}
-                ${inv.items.length>3?`<span class="tag">+${inv.items.length-3} more</span>`:''}
-              </div>
-            </div>
-            <div style="text-align:right;flex-shrink:0">
-              <div style="font-weight:600;font-size:14px">₹${fmt(inv.grand)}</div>
-              <button class="btn xs danger" style="margin-top:6px" onclick="deleteInvoice('${k}',${i})">Remove</button>
-            </div>
-          </div>
-        `).join('')}
+        ${invoiceRows || '<div style="color:var(--text3);font-size:13px">No invoices</div>'}
       </div>
     </div>`;
   }).join('');
@@ -434,30 +501,43 @@ function toggleCard(k) {
 }
 
 function addPayment(k) {
-  const input = document.getElementById('pay-'+k);
-  const amt = +input.value;
-  if (!amt || amt <= 0) { showToast('Enter a valid amount'); return; }
+  const input = document.getElementById('pay-' + k);
+  const amt = parseFloat(input.value) || 0;
+  if (amt <= 0) { showToast('Enter a valid amount'); return; }
   const due = accounts[k].totalBilled - accounts[k].totalPaid;
-  if (amt > due + 0.01) { showToast('Amount exceeds balance due of ₹'+fmt(due)); return; }
-  accounts[k].totalPaid += amt;
+  if (amt > due + 0.01) { showToast('Amount exceeds balance due of ₹' + fmt(due)); return; }
+  // Distribute across unpaid invoices in order
+  let remaining = amt;
+  for (let inv of accounts[k].invoices) {
+    if (remaining <= 0) break;
+    const invDue = inv.grand - (inv.paidAmount || 0);
+    if (invDue <= 0) continue;
+    const pay = Math.min(remaining, invDue);
+    inv.paidAmount = (inv.paidAmount || 0) + pay;
+    if (inv.paidAmount >= inv.grand - 0.01) { inv.paid = true; inv.paidAmount = inv.grand; }
+    remaining -= pay;
+  }
+  recomputeTotals(k);
   saveData();
-  showToast('₹'+fmt(amt)+' recorded for '+accounts[k].name);
+  showToast('₹' + fmt(amt) + ' recorded for ' + accounts[k].name);
   renderAccounts();
 }
 
 function deleteInvoice(k, idx) {
-  if (!confirm('Remove this invoice from the account?')) return;
-  const inv = accounts[k].invoices[idx];
-  accounts[k].totalBilled -= inv.grand;
+  if (!confirm('Remove this invoice?')) return;
   accounts[k].invoices.splice(idx, 1);
-  if (accounts[k].totalPaid > accounts[k].totalBilled) accounts[k].totalPaid = accounts[k].totalBilled;
-  if (!accounts[k].invoices.length) { delete accounts[k]; }
+  accounts[k].invoices.forEach((inv, i) => {
+    inv.num = i + 1;
+    inv.id = 'INV-' + String(i+1).padStart(3,'0');
+  });
+  recomputeTotals(k);
+  if (!accounts[k].invoices.length) delete accounts[k];
   saveData();
   renderAccounts();
 }
 
 function deleteAccount(k) {
-  if (!confirm('Delete entire account for ' + accounts[k].name + '? This cannot be undone.')) return;
+  if (!confirm('Delete entire account for ' + accounts[k].name + '?')) return;
   delete accounts[k];
   saveData();
   renderAccounts();
@@ -467,6 +547,7 @@ function fmt(n) { return Math.round(n).toLocaleString('en-IN'); }
 function h(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 loadData();
+document.getElementById('inv-date').value = todayStr();
 addItem();
 </script>
 </body>
