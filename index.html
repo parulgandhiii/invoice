@@ -136,6 +136,12 @@
   .action-bar { display: flex; gap: 8px; justify-content: flex-end; margin-top: 0.5rem; flex-wrap: wrap; }
   .pos-rel { position: relative; }
   .acct-btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .pay-log { margin-top: 14px; padding-top: 12px; border-top: 0.5px solid var(--border); }
+  .pay-log-title { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; }
+  .pay-log-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--success-bg); border-radius: 7px; margin-bottom: 5px; }
+  .pay-log-row:last-child { margin-bottom: 0; }
+  .pay-log-amt { font-size: 13px; font-weight: 600; color: var(--success-text); }
+  .pay-log-meta { font-size: 11px; color: var(--success-text); opacity: 0.8; }
   /* ── PDF print styles ── */
   @media print {
     body * { visibility: hidden !important; }
@@ -507,6 +513,13 @@ function renderAccounts() {
           Invoices (${a.invoices.length})
         </p>
         ${invoiceBlocks||'<div style="color:var(--text3);font-size:13px">No invoices</div>'}
+        ${a.paymentLog&&a.paymentLog.length?`<div class="pay-log">
+          <div class="pay-log-title">Payment History (${a.paymentLog.length})</div>
+          ${a.paymentLog.slice().reverse().map(p=>`<div class="pay-log-row">
+            <span class="pay-log-amt">₹${fmt(p.amount)}</span>
+            <span class="pay-log-meta">${p.date} &nbsp;·&nbsp; ${p.time}</span>
+          </div>`).join('')}
+        </div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -533,6 +546,13 @@ function addPayment(k) {
     if (inv.paidAmount>=inv.grand-0.01) { inv.paid=true; inv.paidAmount=inv.grand; }
     remaining -= pay;
   }
+  if (!accounts[k].paymentLog) accounts[k].paymentLog = [];
+  const now = new Date();
+  accounts[k].paymentLog.push({
+    amount: amt,
+    date: now.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}),
+    time: now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true})
+  });
   recomputeTotals(k);
   saveData();
   showToast('₹'+fmt(amt)+' recorded for '+accounts[k].name);
@@ -663,7 +683,6 @@ function previewCurrentInvoicePDF() {
         <div class="biz-sub">Invoice</div>
       </div>
       ${buildInvoiceHTML(inv, name, phone)}
-      <div class="footer">Victor Automobiles &nbsp;|&nbsp; Thank you for your business!</div>
     </div>`;
   showPDF(html);
 }
@@ -679,24 +698,14 @@ function downloadSingleInvoicePDF(k, idx) {
         <div class="biz-sub">Invoice</div>
       </div>
       ${buildInvoiceHTML(inv, a.name, a.phone)}
-      <div class="footer">Victor Automobiles &nbsp;|&nbsp; Thank you for your business!</div>
     </div>`;
   showPDF(html);
 }
 
-// Download all invoices for a customer as a statement PDF
+// Download account statement PDF (summary only)
 function downloadAccountStatementPDF(k) {
   const a = accounts[k];
   const due = Math.max(0, a.totalBilled - a.totalPaid);
-  const invPages = a.invoices.map((inv, i) => `
-    <div class="${i < a.invoices.length-1 ? 'page-break' : ''}">
-      <div class="pdf-header" style="margin-bottom:20px">
-        <div class="biz-name">Victor Automobiles</div>
-        <div class="biz-sub">Invoice ${inv.id}</div>
-      </div>
-      ${buildInvoiceHTML(inv, a.name, a.phone)}
-      <div class="footer" style="margin-top:24px">Victor Automobiles &nbsp;|&nbsp; Thank you for your business!</div>
-    </div>`).join('');
 
   const summaryRows = a.invoices.map(inv => `
     <tr>
@@ -715,7 +724,7 @@ function downloadAccountStatementPDF(k) {
       .summary-table tr:last-child td { border-bottom:none; }
       .summary-box { background:#f9f9f7;border-radius:8px;padding:16px 20px;margin-top:16px; }
     </style>
-    <div class="pdf-page page-break">
+    <div class="pdf-page">
       <div class="pdf-header">
         <div class="biz-name">Victor Automobiles</div>
         <div class="biz-sub">Account Statement</div>
@@ -748,9 +757,7 @@ function downloadAccountStatementPDF(k) {
           <span>Balance Due</span><span>₹${fmt(due)}</span>
         </div>
       </div>
-      <div class="footer">Victor Automobiles &nbsp;|&nbsp; Detailed invoices on following pages</div>
-    </div>
-    ${invPages}`;
+    </div>`;
   showPDF(html);
 }
 
