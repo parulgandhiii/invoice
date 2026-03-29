@@ -190,8 +190,8 @@
       <p class="card-label">Pricing</p>
       <div class="grid3" style="margin-bottom:14px">
         <div class="field">
-          <label>Discount (₹)</label>
-          <input type="number" id="discount" value="0" min="0" oninput="calcTotals()"/>
+          <label>Discount %</label>
+          <input type="number" id="discount" value="0" min="0" max="100" oninput="calcTotals()"/>
         </div>
         <div class="field">
           <label>GST %</label>
@@ -204,7 +204,7 @@
       </div>
       <div class="totals-box">
         <div class="total-row"><span>Subtotal</span><span id="t-sub">₹0</span></div>
-        <div class="total-row"><span>Discount</span><span id="t-disc">-₹0</span></div>
+        <div class="total-row"><span>Discount</span><span id="t-disc">-₹0 (0%)</span></div>
         <div class="total-row"><span>GST</span><span id="t-gst">₹0</span></div>
         <div class="total-row grand"><span>Total</span><span id="t-grand">₹0</span></div>
       </div>
@@ -316,16 +316,17 @@ function setItemField(id, field, value) {
 
 function calcTotals() {
   const sub = items.reduce((s, i) => s + (i.qty || 0) * (i.rate || 0), 0);
-  const disc = Math.max(0, parseFloat(document.getElementById('discount').value) || 0);
+  const discPct = Math.min(100, Math.max(0, parseFloat(document.getElementById('discount').value) || 0));
+  const discAmt = sub * discPct / 100;
   const gstPct = Math.max(0, parseFloat(document.getElementById('gst').value) || 0);
-  const afterDisc = Math.max(0, sub - disc);
+  const afterDisc = Math.max(0, sub - discAmt);
   const gstAmt = afterDisc * gstPct / 100;
   const grand = afterDisc + gstAmt;
   document.getElementById('t-sub').textContent = '₹' + fmt(sub);
-  document.getElementById('t-disc').textContent = '-₹' + fmt(disc);
+  document.getElementById('t-disc').textContent = '-₹' + fmt(discAmt) + ' (' + discPct + '%)';
   document.getElementById('t-gst').textContent = '₹' + fmt(gstAmt) + ' (' + gstPct + '%)';
   document.getElementById('t-grand').textContent = '₹' + fmt(grand);
-  return { sub, disc, gstPct, gstAmt, grand };
+  return { sub, disc: discAmt, discPct, gstPct, gstAmt, grand };
 }
 
 // ─── Save Invoice ─────────────────────────────────────────
@@ -455,13 +456,13 @@ function renderAccounts() {
           ${inv.items.length > 3 ? `<span class="tag">+${inv.items.length-3} more</span>` : ''}
         </div>` : ''}
         <div class="inv-row-bottom">
-          <label class="toggle-wrap" onclick="toggleInvoicePaid('${k}',${i})">
-            <div class="toggle-switch">
-              <input type="checkbox" ${inv.paid ? 'checked' : ''} onclick="event.stopPropagation();toggleInvoicePaid('${k}',${i})"/>
+          <div class="toggle-wrap" onclick="toggleInvoicePaid('${k}',${i})" style="cursor:pointer">
+            <div class="toggle-switch" style="pointer-events:none">
+              <input type="checkbox" ${inv.paid ? 'checked' : ''} style="pointer-events:none"/>
               <div class="toggle-track"></div>
             </div>
             <span class="toggle-lbl">${inv.paid ? 'Mark as unpaid' : 'Mark as paid'}</span>
-          </label>
+          </div>
           <button class="btn xs danger" style="margin-left:auto" onclick="deleteInvoice('${k}',${i})">Remove</button>
         </div>
         ${inv.notes ? `<div style="font-size:12px;color:var(--text2);margin-top:6px">${h(inv.notes)}</div>` : ''}
